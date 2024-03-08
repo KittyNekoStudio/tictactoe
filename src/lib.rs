@@ -22,3 +22,12 @@ impl Board {
     pub const COLUMN3: usize = Column::C;
 
 }
+pub struct Circle;
+impl Circle {
+    pub const MOVE: usize = 0;
+}
+
+pub struct Xs;
+impl Xs {
+    pub const MOVE: usize = 1;
+}
