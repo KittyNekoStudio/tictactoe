@@ -1,12 +1,14 @@
 mod def;
 mod gamestate;
 use def::Board;
+use crate::def::Circles;
+use crate::def::Player::PlayerTwo;
 
-use crate::def::Row;
+use crate::gamestate::update_board_state;
 
 fn main() {
     let mut board = Board::new();
-    board[0].push("row1", 'b', 1);
-    board[0].row1 = Row{a: Box::new([0]), ..board[0].row1.clone()};
-    println!("{:?}", board[0].row1);
+    let player = PlayerTwo(Circles);
+    update_board_state(&mut board, player);
+    println!("{:?}", board);
 }
