@@ -1,4 +1,3 @@
-use core::fmt;
 use crate::gamestate::print_board;
 #[derive(Debug, Clone)]
 // The row for the board
@@ -37,28 +36,9 @@ impl Board {
         }
     }
 }
-// Display for board
-impl fmt::Display for Board {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        print_board();
-        Ok(())
-    }
-}
 // An enum to track witch player we are refering to
 #[derive(Debug, PartialEq)]
 pub enum Player {
-    PlayerOne(Xs),
-    PlayerTwo(Circles) 
-}
-// The Xs are player 1
-#[derive(Debug, PartialEq)]
-pub struct Xs;
-impl Xs {
-    pub const MOVE: usize = 0;
-}
-// The Circles are player 2
-#[derive(Debug, PartialEq)]
-pub struct Circles;
-impl Circles {
-    pub const MOVE: usize = 1;
+    PlayerOne,
+    PlayerTwo 
 }
