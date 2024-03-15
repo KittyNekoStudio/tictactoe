@@ -1,4 +1,3 @@
-use crate::gamestate::print_board;
 #[derive(Debug, Clone)]
 // The row for the board
 pub struct Row {

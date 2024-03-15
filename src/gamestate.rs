@@ -1,8 +1,59 @@
 use crate::def::{Board, Player};
 use std::io;
 // Print the board to the console
-pub fn print_board(board: Board) {
-    println!("{:?}", board);
+pub fn print_board(board: &Board) {
+    let mut cell1 = "|       ";
+    let mut cell2 = "|       ";
+    let mut cell3 = "|       |";
+    let mut cell4 = "|       ";
+    let mut cell5 = "|       ";
+    let mut cell6 = "|       |";
+    let mut cell7 = "|       ";
+    let mut cell8 = "|       ";
+    let mut cell9 = "|       |";
+
+        if board.row1.a == vec![1] {
+            cell1 = "|   X   ";
+        } if board.row1.a == vec![0] {
+            cell1 = "|   O   ";
+        } if board.row2.a == vec![1] {
+            cell2 = "|   X   ";
+        } if board.row2.a == vec![0] {
+            cell2 = "|   O   ";
+        } if board.row3.a == vec![1] {
+            cell3 = "|   X   |";
+        } if board.row3.a == vec![0] {
+            cell3 = "|   O   |";
+        } if board.row1.b == vec![1] {
+            cell4 = "|   X   ";
+        } if board.row1.b == vec![0] {
+            cell4 = "|   O   ";
+        } if board.row2.b == vec![1] {
+            cell5 = "|   X   ";
+        } if board.row2.b == vec![0] {
+            cell5 = "|   O   ";
+        } if board.row3.b == vec![1] {
+            cell6 = "|   X   |";
+        } if board.row3.b == vec![0] {
+            cell6 = "|   O   |";
+        } if board.row1.c == vec![1] {
+            cell7 = "|   X   ";
+        } if board.row1.c == vec![0] {
+            cell7 = "|   O   ";
+        } if board.row2.c == vec![1] {
+            cell8 = "|   X   ";
+        } if board.row2.c == vec![0] {
+            cell8 = "|   O   ";
+        } if board.row3.c == vec![1] {
+            cell9 = "|   X   |";
+        } if board.row3.c == vec![0] {
+            cell9 = "|   O   |";
+        }
+    
+        println!("{}{}{}", cell1, cell2, cell3);
+        println!("{}{}{}", cell4, cell5, cell6);
+        println!("{}{}{}", cell7, cell8, cell9);
+    
 }
 // Swap players
 fn switch_player_turn(player: Player) -> Player {
@@ -13,6 +64,7 @@ fn switch_player_turn(player: Player) -> Player {
 }
 // Recive player input
 pub fn recive_input() -> String {
+    println!("To choose square pick a number between 1 and 9");
     let mut player_input = String::new();
     io::stdin().read_line(&mut player_input).unwrap();
     let player_input_clean: String = player_input.trim().parse().unwrap();
@@ -36,15 +88,15 @@ pub fn if_input_exsits(all_inputs: &Vec<String>, new_input: String) -> bool {
 // Checks that player input is one of the allowed strings
 pub fn check_player_input(player_input: &String) -> bool {
     match player_input.as_str() {
-        "a1" => true,
-        "a2" => true,
-        "a3" => true,
-        "b1" => true,
-        "b2" => true,
-        "b3" => true,
-        "c1" => true,
-        "c2" => true,
-        "c3" => true,
+        "1" => true,
+        "2" => true,
+        "3" => true,
+        "4" => true,
+        "5" => true,
+        "6" => true,
+        "7" => true,
+        "8" => true,
+        "9" => true,
         _ => false
     }
 }
@@ -52,28 +104,28 @@ pub fn check_player_input(player_input: &String) -> bool {
 pub fn update_board_state(board: &mut Board, player: &Player, player_input: &String) {
     if player == &Player::PlayerOne {
         match player_input.as_str() {
-            "a1" => board.row1.a.push(1),
-            "a2" => board.row2.a.push(1),
-            "a3" => board.row3.a.push(1),
-            "b1" => board.row1.b.push(1),
-            "b2" => board.row2.b.push(1),
-            "b3" => board.row3.b.push(1),
-            "c1" => board.row1.c.push(1),
-            "c2" => board.row2.c.push(1),
-            "c3" => board.row3.c.push(1),
+            "1" => board.row1.a.push(1),
+            "2" => board.row2.a.push(1),
+            "3" => board.row3.a.push(1),
+            "4" => board.row1.b.push(1),
+            "5" => board.row2.b.push(1),
+            "6" => board.row3.b.push(1),
+            "7" => board.row1.c.push(1),
+            "8" => board.row2.c.push(1),
+            "9" => board.row3.c.push(1),
             _ => ()
         };
     } else {
         match player_input.as_str() {
-            "a1" => board.row1.a.push(0),
-            "a2" => board.row2.a.push(0),
-            "a3" => board.row3.a.push(0),
-            "b1" => board.row1.b.push(0),
-            "b2" => board.row2.b.push(0),
-            "b3" => board.row3.b.push(0),
-            "c1" => board.row1.c.push(0),
-            "c2" => board.row2.c.push(0),
-            "c3" => board.row3.c.push(0),
+            "1" => board.row1.a.push(0),
+            "2" => board.row2.a.push(0),
+            "3" => board.row3.a.push(0),
+            "4" => board.row1.b.push(0),
+            "5" => board.row2.b.push(0),
+            "6" => board.row3.b.push(0),
+            "7" => board.row1.c.push(0),
+            "8" => board.row2.c.push(0),
+            "9" => board.row3.c.push(0),
             _ => ()
         };
     }}
@@ -135,6 +187,7 @@ pub fn play_game() {
     // Variables to check for draw
     let player_x = Player::PlayerOne;
     let player_o = Player::PlayerTwo;
+    print_board(&board);
     // Have the code run once without the loop activated to be able to use the function if_input_exsits
     let player_input = recive_input();
     update_board_state(&mut board, &player, &player_input);
@@ -148,6 +201,7 @@ pub fn play_game() {
         if all_inputs.len() == 9 {
             break;
         }
+        print_board(&board);
         // Recive user input
         let mut player_input = recive_input();
         // Checks if cell is already filled if it is the call recive_input again
@@ -168,6 +222,7 @@ pub fn play_game() {
         println!("{:?}", all_inputs);
 
     }
+        print_board(&board);
         // If win check witch player and print the corrasoponding string
         if did_win(&board, &player) {
             if player == Player::PlayerOne {
