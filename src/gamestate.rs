@@ -1,7 +1,9 @@
 use crate::def::{Board, Player};
+use crate::engine::{engine_player_type, run_engine, use_engine};
 use std::io;
 // Print the board to the console
 pub fn print_board(board: &Board) {
+    // Makes the empty cells
     let mut cell1 = "|       ";
     let mut cell2 = "|       ";
     let mut cell3 = "|       |";
@@ -12,6 +14,8 @@ pub fn print_board(board: &Board) {
     let mut cell8 = "|       ";
     let mut cell9 = "|       |";
 
+    // Goes through every vector to check if player X or O has played there
+    // Changes the cell accordingly
         if board.row1.a == vec![1] {
             cell1 = "|   X   ";
         } if board.row1.a == vec![0] {
@@ -64,7 +68,7 @@ fn switch_player_turn(player: Player) -> Player {
 }
 // Recive player input
 pub fn recive_input() -> String {
-    println!("To choose square pick a number between 1 and 9");
+    println!("To choose a square pick a number between 1 and 9");
     let mut player_input = String::new();
     io::stdin().read_line(&mut player_input).unwrap();
     let player_input_clean: String = player_input.trim().parse().unwrap();
@@ -170,38 +174,43 @@ pub fn did_win(board: &Board, player: &Player) -> bool {
         return false;
     }
 }
-// Check if none of the winning positions are met when all moves are made
-pub fn is_draw(board: &Board, player1: &Player, player2: &Player) -> bool {
-    if did_win(&board, &player1) == false && did_win(&board, &player2) == false {
-        return true;
-    } else {
-        return false;
-    }
-}
 // Function that combines all functions to make the program run
 pub fn play_game() {
     let mut board = Board::new();
     // Holds all input used to check if already have input and for the main loop condition
     let mut all_inputs: Vec<String> = Vec::new();
     let mut player = choose_player();
-    // Variables to check for draw
-    let player_x = Player::PlayerOne;
-    let player_o = Player::PlayerTwo;
+    // Chooses engine player
+    let engine_player = engine_player_type(&player);
+    // Asks whether to play against an engine or not
+    let ask_for_engine = use_engine();
+    if ask_for_engine == true {
+        if engine_player == Player::PlayerOne {
+            run_engine();
+        }
+    } 
+    // Prints the empty board
     print_board(&board);
     // Have the code run once without the loop activated to be able to use the function if_input_exsits
     let player_input = recive_input();
     update_board_state(&mut board, &player, &player_input);
     all_inputs.push(player_input.clone());
-    println!("{:?}", player);
     player = switch_player_turn(player);
-    println!("{:?}", all_inputs);
     
     loop {
         // Loop breaks if board becomes full
         if all_inputs.len() == 9 {
             break;
         }
+        let engine_player = engine_player_type(&player);
+        // Prints the board with every loop
         print_board(&board);
+        // At the top of the loop because the player type changes before loop begins
+        if ask_for_engine == true {
+            if engine_player == Player::PlayerOne {
+                run_engine();
+            }
+        }
         // Recive user input
         let mut player_input = recive_input();
         // Checks if cell is already filled if it is the call recive_input again
@@ -215,15 +224,18 @@ pub fn play_game() {
         if did_win(&board, &player) {
             break;
         }
-        // Code for debugging to be able to read the player turn and all input
-        println!("{:?}", player);
+        if ask_for_engine == true {
+            if engine_player == Player::PlayerTwo {
+                run_engine();
+            }
+        }
         // Switch player turn
         player = switch_player_turn(player);
-        println!("{:?}", all_inputs);
 
     }
+        // Prints the final board
         print_board(&board);
-        // If win check witch player and print the corrasoponding string
+        // If win check which player and print the corresponding string
         if did_win(&board, &player) {
             if player == Player::PlayerOne {
                 return println!("Good job on winning player X! Thanks for playing. Hope to see you around again.");
@@ -231,8 +243,5 @@ pub fn play_game() {
                 return println!("Good job on winning player O! Thanks for playing. Hope to see you around again.");
             }
         }
-        // If draw print the string
-        if is_draw(&board, &player_x, &player_o) {
-            return println!("Too bad! You drew. Try winning next time.");
-        }
+        println!("Too bad! You drew. Try winning next time.");
     }
