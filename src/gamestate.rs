@@ -1,5 +1,5 @@
 use crate::def::{Board, Player};
-use crate::engine::{engine_player_type, run_engine, use_engine};
+use crate::engine::{random_string_gen, run_engine, use_engine};
 use std::io;
 // Print the board to the console
 pub fn print_board(board: &Board) {
@@ -60,7 +60,7 @@ pub fn print_board(board: &Board) {
     
 }
 // Swap players
-fn switch_player_turn(player: Player) -> Player {
+fn switch_player_turn(player: &Player) -> Player {
     match player {
         Player::PlayerOne => Player::PlayerTwo,
         Player::PlayerTwo => Player::PlayerOne,
@@ -176,44 +176,23 @@ pub fn did_win(board: &Board, player: &Player) -> bool {
 }
 // Function that combines all functions to make the program run
 pub fn play_game() {
+    // An if statement that lets user decide to play with the engine or not
+    if use_engine() {
+        play_game_with_engine();
+    } else {
     let mut board = Board::new();
     // Holds all input used to check if already have input and for the main loop condition
     let mut all_inputs: Vec<String> = Vec::new();
     let mut player = choose_player();
-    // Chooses engine player
-    let engine_player = engine_player_type(&player);
-    // Asks whether to play against an engine or not
-    let ask_for_engine = use_engine();
-    if ask_for_engine == true {
-        if engine_player == Player::PlayerOne {
-            run_engine();
-        }
-    } 
-    // Prints the empty board
-    print_board(&board);
-    // Have the code run once without the loop activated to be able to use the function if_input_exsits
-    let player_input = recive_input();
-    update_board_state(&mut board, &player, &player_input);
-    all_inputs.push(player_input.clone());
-    player = switch_player_turn(player);
-    
     loop {
         // Loop breaks if board becomes full
         if all_inputs.len() == 9 {
             break;
         }
-        let engine_player = engine_player_type(&player);
-        // Prints the board with every loop
         print_board(&board);
-        // At the top of the loop because the player type changes before loop begins
-        if ask_for_engine == true {
-            if engine_player == Player::PlayerOne {
-                run_engine();
-            }
-        }
         // Recive user input
         let mut player_input = recive_input();
-        // Checks if cell is already filled if it is the call recive_input again
+        // Checks if cell is already filled if it is then call recive_input again
         while if_input_exsits(&all_inputs, player_input.clone()) {
             player_input = recive_input();
         }
@@ -224,13 +203,8 @@ pub fn play_game() {
         if did_win(&board, &player) {
             break;
         }
-        if ask_for_engine == true {
-            if engine_player == Player::PlayerTwo {
-                run_engine();
-            }
-        }
         // Switch player turn
-        player = switch_player_turn(player);
+        player = switch_player_turn(&player);
 
     }
         // Prints the final board
@@ -244,4 +218,108 @@ pub fn play_game() {
             }
         }
         println!("Too bad! You drew. Try winning next time.");
+    }
+    }
+// Function that runs if use decides to play with the engine
+pub fn play_game_with_engine() {
+    let mut board = Board::new();
+    let mut all_inputs: Vec<String> = Vec::new();
+    let user_player = choose_player();
+    // Engine is opposite player type of player
+    let engine_player = switch_player_turn(&user_player);
+    loop {
+        // Loop breaks if all inputs is = 9
+        if all_inputs.len() == 9 {
+            break;
+        }
+        // This is here as the engine pushes it's number to all_input before
+        // The user can put input thiers
+        if all_inputs.len() == 8 && user_player == Player::PlayerOne {
+            break;
+        }
+        // Print board
+        print_board(&board);
+        if &user_player == &Player::PlayerOne {
+            let mut player_input = recive_input();
+            // If input exsists call again
+            while if_input_exsits(&all_inputs, player_input.clone()) {
+                player_input = recive_input();
+            }
+            // Update the board
+            update_board_state(&mut board, &user_player, &player_input);
+            // Push to collection
+            all_inputs.push(player_input);
+            // If win break the loop
+            if did_win(&board, &user_player) {
+                break;
+            }
+          // Else the engine is X which means it goes first
+        } else {
+            // Get a random number
+            let mut random_num = random_string_gen();
+            // Same as for user input
+            // Number gets converted to a string
+            while if_input_exsits(&all_inputs, random_num.to_string()) {
+                random_num = random_string_gen();
+            }
+            // Same as user input
+            update_board_state(&mut board, &engine_player, &random_num.to_string());
+            all_inputs.push(random_num.to_string());
+            if did_win(&board, &engine_player) {
+            break;
+            // If this is not here if engine did not win it would continue
+            // Softlocking the program as you can't input anymore numbers
+        } if all_inputs.len() == 9 {
+            break;
+        }
+        }
+        // The same as for Xs but now for Circles
+        if &user_player == &Player::PlayerTwo {
+            let mut player_input = recive_input();
+            while if_input_exsits(&all_inputs, player_input.clone()) {
+                player_input = recive_input();
+            }
+            update_board_state(&mut board, &user_player, &player_input);
+            all_inputs.push(player_input);
+            if did_win(&board, &user_player) {
+                break;
+            }
+        } else {
+            let mut random_num = random_string_gen();
+            while if_input_exsits(&all_inputs, random_num.to_string()) {
+                random_num = random_string_gen();
+            }
+            update_board_state(&mut board, &engine_player, &random_num.to_string());
+            all_inputs.push(random_num.to_string());
+            if did_win(&board, &engine_player) {
+                break;
+            }
+        }
+        
+    }
+    // Another round of input for the user
+    if all_inputs.len() == 8 && did_win(&board, &user_player) == false {
+        // The engine can win when all_inputs = 8
+        // So this catches that
+        if did_win(&board, &engine_player) {
+            print_board(&board);
+            return println!("You lost to a bot! You suck!");
+        }
+        print_board(&board);
+        let mut player_input = recive_input();
+            while if_input_exsits(&all_inputs, player_input.clone()) {
+                player_input = recive_input();
+            }
+            update_board_state(&mut board, &user_player, &player_input);
+            all_inputs.push(player_input);
+    }
+    // Printing the statement and ending the loop if they lose or draw
+    print_board(&board);
+    if did_win(&board, &user_player) {
+        return println!("You won against a bot! Feel proud of yourself!");
+    }
+    if did_win(&board, &engine_player) {
+        return println!("You lost to a bot! You suck!");
+    }
+    println!("Too bad! You drew. Try winning next time.");
     }

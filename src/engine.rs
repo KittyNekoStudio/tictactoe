@@ -1,5 +1,7 @@
 use std::io;
-use crate::def::Player;
+use rand::seq::SliceRandom;
+use crate::def::{Board, Player};
+use crate::gamestate::{self, print_board};
 // Function that allows the choice of whether to play the engine or not
 pub fn use_engine() -> bool {
     println!("Do you want to play against an engine. Type Y or N to choose.");
@@ -12,12 +14,19 @@ pub fn use_engine() -> bool {
         _ => use_engine()
     }
 }
-pub fn engine_player_type(player: &Player) -> Player {
-    match player {
-        &Player::PlayerOne => Player::PlayerTwo,
-        &Player::PlayerTwo => Player::PlayerOne
+pub fn make_move(mut board: &mut Board, player: &Player) -> Board {
+    return board.clone();
+}
+// Generates a random number
+pub fn random_string_gen() -> &'static str {
+    let vec = vec!["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    let random_num = vec.choose(&mut rand::thread_rng());
+    match random_num {
+    Some(i) => *i,
+    None => random_string_gen()        
     }
 }
-pub fn run_engine() {
-    println!("I'm an engine");
+// A function that combines all functions so the engine runs
+pub fn run_engine(mut board: &mut Board, player: &Player) {
+    print_board(&board);
 }
