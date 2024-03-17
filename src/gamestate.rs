@@ -232,13 +232,15 @@ pub fn play_game_with_engine() {
         if all_inputs.len() == 9 {
             break;
         }
+        // Prints an empty board when user is Xs
+        if &user_player == &Player::PlayerOne && all_inputs.len() == 0{
+            print_board(&board);
+        }
         // This is here as the engine pushes it's number to all_input before
         // The user can put input thiers
         if all_inputs.len() == 8 && user_player == Player::PlayerOne {
             break;
         }
-        // Print board
-        print_board(&board);
         if &user_player == &Player::PlayerOne {
             let mut player_input = recive_input();
             // If input exsists call again
@@ -253,6 +255,7 @@ pub fn play_game_with_engine() {
             if did_win(&board, &user_player) {
                 break;
             }
+            
           // Else the engine is X which means it goes first
         } else {
             // Get a random number
@@ -267,11 +270,16 @@ pub fn play_game_with_engine() {
             all_inputs.push(random_num.to_string());
             if did_win(&board, &engine_player) {
             break;
-            // If this is not here if engine did not win it would continue
-            // Softlocking the program as you can't input anymore numbers
-        } if all_inputs.len() == 9 {
+        } 
+        // If this is not here if engine did not win it would continue
+        // Softlocking the program as you can't input anymore numbers
+        if all_inputs.len() == 9 {
             break;
         }
+        // The board gets printed on the engines turn
+        // When user was Circles it would print after you went
+        // Which meant you couldn't see what the engine did
+        print_board(&board);
         }
         // The same as for Xs but now for Circles
         if &user_player == &Player::PlayerTwo {
@@ -294,6 +302,8 @@ pub fn play_game_with_engine() {
             if did_win(&board, &engine_player) {
                 break;
             }
+            // Same as with the first one
+            print_board(&board);
         }
         
     }
@@ -305,7 +315,6 @@ pub fn play_game_with_engine() {
             print_board(&board);
             return println!("You lost to a bot! You suck!");
         }
-        print_board(&board);
         let mut player_input = recive_input();
             while if_input_exsits(&all_inputs, player_input.clone()) {
                 player_input = recive_input();
@@ -316,7 +325,7 @@ pub fn play_game_with_engine() {
     // Printing the statement and ending the loop if they lose or draw
     print_board(&board);
     if did_win(&board, &user_player) {
-        return println!("You won against a bot! Feel proud of yourself!");
+        return println!("You won against a bot! Don't feel to proud of yourself!");
     }
     if did_win(&board, &engine_player) {
         return println!("You lost to a bot! You suck!");

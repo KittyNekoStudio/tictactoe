@@ -22,7 +22,7 @@ pub fn random_string_gen() -> &'static str {
     let vec = vec!["1", "2", "3", "4", "5", "6", "7", "8", "9"];
     let random_num = vec.choose(&mut rand::thread_rng());
     match random_num {
-    Some(i) => *i,
+    Some(i) => i,
     None => random_string_gen()        
     }
 }
