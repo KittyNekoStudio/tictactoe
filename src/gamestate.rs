@@ -66,19 +66,18 @@ fn switch_player_turn(player: &Player) -> Player {
         Player::PlayerTwo => Player::PlayerOne,
     }
 }
-// Recive player input
-pub fn recive_input() -> String {
-    println!("To choose a square pick a number between 1 and 9");
+// Receive player input
+pub fn receive_input() -> String {
     let mut player_input = String::new();
     io::stdin().read_line(&mut player_input).unwrap();
     let player_input_clean: String = player_input.trim().parse().unwrap();
-    // Calls recive input again if player inputed non allowed string
+    // Calls receive input again if player inputed non allowed string
     if check_player_input(&player_input_clean) == false {
-        return recive_input();
+        return receive_input();
     }
     return player_input_clean;
 }
-// Checks if input has already been recived
+// Checks if input has already been received
 pub fn if_input_exsits(all_inputs: &Vec<String>, new_input: String) -> bool {
     let mut i = 0;
     while i < all_inputs.len() {
@@ -184,17 +183,18 @@ pub fn play_game() {
     // Holds all input used to check if already have input and for the main loop condition
     let mut all_inputs: Vec<String> = Vec::new();
     let mut player = choose_player();
+    println!("To choose a square pick a number between 1 and 9");
     loop {
         // Loop breaks if board becomes full
         if all_inputs.len() == 9 {
             break;
         }
         print_board(&board);
-        // Recive user input
-        let mut player_input = recive_input();
-        // Checks if cell is already filled if it is then call recive_input again
+        // Receive user input
+        let mut player_input = receive_input();
+        // Checks if cell is already filled if it is then call receive_input again
         while if_input_exsits(&all_inputs, player_input.clone()) {
-            player_input = recive_input();
+            player_input = receive_input();
         }
         // Update the board with the input
         update_board_state(&mut board, &player, &player_input);
@@ -227,6 +227,7 @@ pub fn play_game_with_engine() {
     let user_player = choose_player();
     // Engine is opposite player type of player
     let engine_player = switch_player_turn(&user_player);
+    println!("To choose a square pick a number between 1 and 9");
     loop {
         // Loop breaks if all inputs is = 9
         if all_inputs.len() == 9 {
@@ -242,10 +243,10 @@ pub fn play_game_with_engine() {
             break;
         }
         if &user_player == &Player::PlayerOne {
-            let mut player_input = recive_input();
+            let mut player_input = receive_input();
             // If input exsists call again
             while if_input_exsits(&all_inputs, player_input.clone()) {
-                player_input = recive_input();
+                player_input = receive_input();
             }
             // Update the board
             update_board_state(&mut board, &user_player, &player_input);
@@ -283,9 +284,9 @@ pub fn play_game_with_engine() {
         }
         // The same as for Xs but now for Circles
         if &user_player == &Player::PlayerTwo {
-            let mut player_input = recive_input();
+            let mut player_input = receive_input();
             while if_input_exsits(&all_inputs, player_input.clone()) {
-                player_input = recive_input();
+                player_input = receive_input();
             }
             update_board_state(&mut board, &user_player, &player_input);
             all_inputs.push(player_input);
@@ -315,9 +316,9 @@ pub fn play_game_with_engine() {
             print_board(&board);
             return println!("You lost to a bot! You suck!");
         }
-        let mut player_input = recive_input();
+        let mut player_input = receive_input();
             while if_input_exsits(&all_inputs, player_input.clone()) {
-                player_input = recive_input();
+                player_input = receive_input();
             }
             update_board_state(&mut board, &user_player, &player_input);
             all_inputs.push(player_input);
