@@ -1,5 +1,5 @@
 use crate::def::{Board, Player};
-use crate::engine::{random_string_gen, run_engine, use_engine};
+use crate::engine::{choose_difficulty, random_string_gen, run_engine, use_engine};
 use std::io;
 // Print the board to the console
 pub fn print_board(board: &Board) {
@@ -182,7 +182,9 @@ pub fn play_game() {
     let mut board = Board::new();
     // Holds all input used to check if already have input and for the main loop condition
     let mut all_inputs: Vec<String> = Vec::new();
-    let mut player = choose_player();
+    // Player starts as X because X goes first
+    let mut player = Player::PlayerOne;
+    println!("X goes first");
     println!("To choose a square pick a number between 1 and 9");
     loop {
         // Loop breaks if board becomes full
@@ -224,6 +226,7 @@ pub fn play_game() {
 pub fn play_game_with_engine() {
     let mut board = Board::new();
     let mut all_inputs: Vec<String> = Vec::new();
+    let difficulty = choose_difficulty();
     let user_player = choose_player();
     // Engine is opposite player type of player
     let engine_player = switch_player_turn(&user_player);
@@ -256,19 +259,14 @@ pub fn play_game_with_engine() {
             if did_win(&board, &user_player) {
                 break;
             }
-            
           // Else the engine is X which means it goes first
         } else {
-            // Get a random number
-            let mut random_num = random_string_gen();
-            // Same as for user input
-            // Number gets converted to a string
-            while if_input_exsits(&all_inputs, random_num.to_string()) {
-                random_num = random_string_gen();
-            }
-            // Same as user input
-            update_board_state(&mut board, &engine_player, &random_num.to_string());
-            all_inputs.push(random_num.to_string());
+            // Call run_engine
+            let result = run_engine(&mut board, &engine_player, difficulty, all_inputs);
+            // Board becomes the output of run_engine
+            board = result.0;
+            // All_iputs becomes the output of run_engine
+            all_inputs = result.1;
             if did_win(&board, &engine_player) {
             break;
         } 
@@ -294,12 +292,9 @@ pub fn play_game_with_engine() {
                 break;
             }
         } else {
-            let mut random_num = random_string_gen();
-            while if_input_exsits(&all_inputs, random_num.to_string()) {
-                random_num = random_string_gen();
-            }
-            update_board_state(&mut board, &engine_player, &random_num.to_string());
-            all_inputs.push(random_num.to_string());
+            let engine = run_engine(&mut board, &engine_player, difficulty, all_inputs);
+            board = engine.0;
+            all_inputs = engine.1;
             if did_win(&board, &engine_player) {
                 break;
             }
