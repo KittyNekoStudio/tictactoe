@@ -42,14 +42,12 @@ pub fn choose_difficulty() -> &'static str {
         _ => choose_difficulty()
     }
 }
+const MAX_DEPTH: u8 = 9;
 pub fn search_move(board: Board, difficulty: &str) -> Board {
     return board;
 }
-// A function that combines all functions so the engine runs
-pub fn run_engine(board: &mut Board , player: &Player, difficulty: &str, mut all_inputs: Vec<String>) -> (Board, Vec<String>)  {
-    // Checks for random first because it runs different code than the other difficulties
-    if difficulty == "random" {
-        // Get a random num
+pub fn random_move(board: &mut Board, player: &Player, mut all_inputs: Vec<String>) -> (Board, Vec<String>) {
+    // Get a random num
         let mut random_num = random_string_gen();
         while if_input_exsits(&all_inputs, random_num.to_string()) {
             // If it has already been played
@@ -65,6 +63,13 @@ pub fn run_engine(board: &mut Board , player: &Player, difficulty: &str, mut all
         // And you also need to return the board to continue on with the game
         // Then you update board and all_inputs by destructuring the result of run_engine
         return (board.clone(), all_inputs);
+}
+// A function that combines all functions so the engine runs
+pub fn run_engine(board: &mut Board , player: &Player, difficulty: &str, mut all_inputs: Vec<String>) -> (Board, Vec<String>)  {
+    // Checks for random first because it runs different code than the other difficulties
+    if difficulty == "random" {
+        // Calls random_move
+        return random_move(board, player, all_inputs);
     }
     return (board.clone(), all_inputs);
     
