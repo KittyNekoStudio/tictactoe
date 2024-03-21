@@ -132,6 +132,20 @@ pub fn update_board_state(board: &mut Board, player: &Player, player_input: &Str
             _ => ()
         };
     }}
+pub fn reset_board_state(board: &mut Board, player_input: &String) {
+        match player_input.as_str() {
+                "1" => board.row1.a = vec![],
+                "2" => board.row2.a = vec![],
+                "3" => board.row3.a = vec![],
+                "4" => board.row1.b = vec![],
+                "5" => board.row2.b = vec![],
+                "6" => board.row3.b = vec![],
+                "7" => board.row1.c = vec![],
+                "8" => board.row2.c = vec![],
+                "9" => board.row3.c = vec![],
+                _ => ()
+        };
+    }
 // User chooses player by typeing either X or O
 pub fn choose_player() -> Player {
     println!("To choose player please type X(first player) or O(second player)");
@@ -292,9 +306,9 @@ pub fn play_game_with_engine() {
                 break;
             }
         } else {
-            let engine = run_engine(&mut board, &engine_player, &engine_player, &user_player, difficulty, all_inputs);
-            board = engine.0;
-            all_inputs = engine.1;
+            let result = run_engine(&mut board, &engine_player, &engine_player, &user_player, difficulty, all_inputs);
+            board = result.0;
+            all_inputs = result.1;
             if did_win(&board, &engine_player) {
                 break;
             }
