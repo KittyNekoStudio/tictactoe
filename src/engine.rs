@@ -14,9 +14,6 @@ pub fn use_engine() -> bool {
         _ => use_engine()
     }
 }
-pub fn make_move(mut board: &mut Board, player: &Player) -> Board {
-    return board.clone();
-}
 // Generates a random number
 pub fn random_string_gen() -> &'static str {
     let vec = vec!["1", "2", "3", "4", "5", "6", "7", "8", "9"];
