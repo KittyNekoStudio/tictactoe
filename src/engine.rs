@@ -55,7 +55,7 @@ pub fn search_move(mut board: &mut Board, player: &Player, engine_player: &Playe
     let moves_left: Vec<i32> = moves_left(&all_inputs);
     let mut all_inputs_search = all_inputs.clone();
     if did_win(&board, &engine_player) {
-        return 1;
+        return 10;
     } else if did_win(&board, &user_player) {
         return -1;
     } else if moves_left.len() == 0 {
@@ -64,21 +64,25 @@ pub fn search_move(mut board: &mut Board, player: &Player, engine_player: &Playe
     let mut moves_with_score: Vec<Vec<i32>> = Vec::new();
     let mut i = 0;
     while i < moves_left.len() {
-        let mut engine_move: Vec<i32> = Vec::new();
-        engine_move.push(moves_left[i]);
+        let mut engine_move: Vec<i32> = vec![0];
+        engine_move[0] = moves_left[i];
         all_inputs_search.push(engine_move[0].to_string());
         update_board_state(&mut board, &player, &engine_move[0].to_string());
-
         if player == engine_player {
             let result = search_move(board, user_player, engine_player, user_player, all_inputs_search.clone());
+            if result == moves_left[i] {
+                search_move(board, engine_player, engine_player, user_player, all_inputs_search.clone());
+            }
             engine_move.push(result);
         } else {
-            let result = search_move(board, engine_player, engine_player, user_player, all_inputs_search.clone());
+             let result = search_move(board, engine_player, engine_player, user_player, all_inputs_search.clone());
+            if result == moves_left[i] {
+                search_move(board, user_player, engine_player, user_player, all_inputs_search.clone());
+            }
             engine_move.push(result);
         }
         reset_board_state(board, &moves_left[i].to_string());
 
-        println!("{:?}", engine_move.clone());
         moves_with_score.push(engine_move);
         i += 1;
     }
@@ -87,9 +91,18 @@ pub fn search_move(mut board: &mut Board, player: &Player, engine_player: &Playe
         let mut best_score = -100;
         let mut i = 0;
         while i < moves_with_score.len() {
-            if moves_with_score[i][1] > best_score {
-                best_score = moves_with_score[i][1];
-                best_move = i;
+            if moves_with_score[i][1] != 10|0|-1 {
+                i += 1;
+                continue;
+            }
+            if moves_with_score[i].len() == 2 {
+                if moves_with_score[i][1] > best_score {
+                    best_score = moves_with_score[i][1];
+                    best_move = i;
+                }
+            } else {
+                i += 1;
+                i -= 1;
             }
             i += 1;
         }
@@ -97,9 +110,18 @@ pub fn search_move(mut board: &mut Board, player: &Player, engine_player: &Playe
         let mut best_score = 100;
         let mut i = 0;
         while i < moves_with_score.len() {
-            if moves_with_score[i][1] < best_score {
-                best_score = moves_with_score[i][1];
-                best_move = i;
+            if moves_with_score[i][1] != 10|0|-1 {
+                i += 1;
+                continue;
+            }
+            if moves_with_score[i].len() == 2 {
+                if moves_with_score[i][1] < best_score {
+                    best_score = moves_with_score[i][1];
+                    best_move = i;
+                }
+            } else {
+                i += 1;
+                i -= 1;
             }
             i += 1;
         } 
