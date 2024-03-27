@@ -52,11 +52,11 @@ pub fn moves_left(all_inputs: &Vec<String>) -> Vec<i32> {
     return moves_left;
 }
 pub fn eval(board: &Board, engine_player: &Player) -> i32 {
-    if did_win(&board, &engine_player) {
+    if did_win(board, &engine_player) {
         return 1;
-    } if did_win(&board, &switch_player_turn(engine_player)) {
+    } if did_win(board, &switch_player_turn(engine_player)) {
         return -1;
-    } 
+    }
     return 0;   
 }
 pub fn search_move(board: &mut Board, player: &Player, engine_player: &Player, user_player: &Player, mut all_inputs: Vec<String>) -> i32 {
@@ -70,9 +70,8 @@ pub fn search_move(board: &mut Board, player: &Player, engine_player: &Player, u
     } 
 
     if player == engine_player {
-        let mut i = 0;
-        let mut best = -100;
-    while i == 0 {
+        let mut best = 0;
+    
         if board.row1.a == vec![] {
             all_inputs.push(String::from("1"));
             update_board_state(board, player, &1.to_string());
@@ -128,13 +127,12 @@ pub fn search_move(board: &mut Board, player: &Player, engine_player: &Player, u
             println!("{}", best);
             reset_board_state(board, &String::from("9"));
         }
-        i += 1;
-    }
+    
+    
     return best;
 } else {
-    let mut i = 0;
-    let mut best = 100;
-    while i == 0 {
+    let mut best = 0;
+    
         if board.row1.a == vec![] {
             all_inputs.push(String::from("1"));
             update_board_state(board, player, &1.to_string());
@@ -190,8 +188,7 @@ pub fn search_move(board: &mut Board, player: &Player, engine_player: &Player, u
             println!("{}", best);
             reset_board_state(board, &String::from("9"));
         }
-        i += 1;
-    }
+    
     return best;
 }
 }
@@ -210,8 +207,8 @@ pub fn best_move(board: &mut Board, player: &Player, engine_player: &Player, use
             best_move = moves_left_inside[0];
             best_eval = eval_move;
         }
+        
         println!("{}", moves_left_inside[0]);
-        println!("{}", best_eval);
         i += 1;
     }
    
