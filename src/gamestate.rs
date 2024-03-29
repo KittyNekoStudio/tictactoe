@@ -276,7 +276,7 @@ pub fn play_game_with_engine() {
           // Else the engine is X which means it goes first
         } else {
             // Call run_engine
-            let result = run_engine(&mut board, &engine_player, &engine_player, &user_player, difficulty, all_inputs);
+            let result = run_engine(&mut board, &engine_player, &engine_player, &user_player, difficulty, &mut all_inputs);
             // Board becomes the output of run_engine
             board = result.0;
             // All_iputs becomes the output of run_engine
@@ -306,7 +306,7 @@ pub fn play_game_with_engine() {
                 break;
             }
         } else {
-            let result = run_engine(&mut board, &engine_player, &engine_player, &user_player, difficulty, all_inputs);
+            let result = run_engine(&mut board, &engine_player, &engine_player, &user_player, difficulty, &mut all_inputs);
             board = result.0;
             all_inputs = result.1;
             if did_win(&board, &engine_player) {

@@ -1,7 +1,7 @@
-use std::io;
+use std::{io, mem};
 use rand::seq::SliceRandom;
 use crate::def::{Board, Player};
-use crate::gamestate::{self, did_win, if_input_exsits, print_board, reset_board_state, switch_player_turn, update_board_state};
+use crate::gamestate::{did_win, if_input_exsits, reset_board_state, switch_player_turn, update_board_state};
 // Function that allows the choice of whether to play the engine or not
 pub fn use_engine() -> bool {
     println!("Do you want to play against an engine. Type Y or N to choose.");
@@ -66,7 +66,66 @@ pub fn is_max(player: &Player) -> bool {
         return false;
     }
 }
-pub fn search_move(board: &mut Board, player: &Player, engine_player: &Player, user_player: &Player, mut all_inputs: Vec<String>, max: bool) -> i32 {
+pub fn convert_to_vector(board: &Board) -> Vec<Vec<i32>> {
+    let mut vector = vec![vec![10; 3]; 3];
+    let mut _got = 0;
+    if board.row1.a == vec![1] {
+    _got = mem::replace(&mut vector[0][0], 1);
+    } 
+    if board.row1.b == vec![1] {
+    _got = mem::replace(&mut vector[0][1], 1);
+    }
+    if board.row1.c == vec![1] {
+    _got = mem::replace(&mut vector[0][2], 1);
+    }
+    if board.row2.a == vec![1] {
+    _got = mem::replace(&mut vector[1][0], 1);
+    }
+    if board.row2.b == vec![1] {
+    _got = mem::replace(&mut vector[1][1], 1);
+    }
+    if board.row2.c == vec![1] {
+    _got = mem::replace(&mut vector[1][2], 1);
+    }
+    if board.row3.a == vec![1] {
+    _got = mem::replace(&mut vector[2][0], 1);
+    }
+    if board.row3.b == vec![1] {
+    _got = mem::replace(&mut vector[2][1], 1);        
+    }
+    if board.row3.c == vec![1] {
+    _got = mem::replace(&mut vector[2][2], 1);
+    }
+    if board.row1.a == vec![0] {
+    _got = mem::replace(&mut vector[0][0], 0);    
+    } 
+    if board.row1.b == vec![0] {
+    _got = mem::replace(&mut vector[0][1], 0);
+    }
+    if board.row1.c == vec![0] {
+    _got = mem::replace(&mut vector[0][2], 0);
+    }
+    if board.row2.a == vec![0] {
+    _got = mem::replace(&mut vector[1][0], 0);        
+    }
+    if board.row2.b == vec![0] {
+    _got = mem::replace(&mut vector[1][1], 0);
+    }
+    if board.row2.c == vec![0] {
+    _got = mem::replace(&mut vector[1][2], 0);        
+    }
+    if board.row3.a == vec![0] {
+    _got = mem::replace(&mut vector[2][0], 0);
+    }
+    if board.row3.b == vec![0] {
+    _got = mem::replace(&mut vector[2][1], 0);        
+    }
+    if board.row3.c == vec![0] {
+    _got = mem::replace(&mut vector[2][2], 0);        
+    }
+    return vector;
+}
+pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>, max: bool) -> i32 {
     let score = eval(&board, &engine_player);
     if score == 1 {
         return score;
@@ -75,148 +134,99 @@ pub fn search_move(board: &mut Board, player: &Player, engine_player: &Player, u
     } else if moves_left(&all_inputs).len() == 0 {
         return score;
     }
+    let board_vec = convert_to_vector(board);
     if max {
-    let mut best = -1;
-        
-        if board.row1.a == vec![] {
-            all_inputs.push(String::from("1"));
-            update_board_state(board, player, &1.to_string());
-            best = best.max(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("1"));
-        } else if board.row2.a == vec![] {
-            all_inputs.push(String::from("2"));
-            update_board_state(board, player, &2.to_string());
-            best = best.max(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("2"));
-        } else if board.row3.a == vec![] {
-            all_inputs.push(String::from("3"));
-            update_board_state(board, player, &3.to_string());
-            best = best.max(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("3"));
-        } else if board.row1.b == vec![] {
-            all_inputs.push(String::from("4"));
-            update_board_state(board, player, &4.to_string());
-            best = best.max(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("4"));
-        } else if board.row2.b == vec![] {
-            all_inputs.push(String::from("5"));
-            update_board_state(board, player, &5.to_string());
-            best = best.max(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("5"));
-        } else if board.row3.b == vec![] {
-            all_inputs.push(String::from("6"));
-            update_board_state(board, player, &6.to_string());
-            best = best.max(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("6"));
-        } else if board.row1.c == vec![] {
-            all_inputs.push(String::from("7"));
-            update_board_state(board, player, &7.to_string());
-            best = best.max(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("7"));
-        } else if board.row2.c == vec![] {
-            all_inputs.push(String::from("8"));
-            update_board_state(board, player, &8.to_string());
-            best = best.max(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("8"));
-        } else if board.row3.c == vec![] {
-            all_inputs.push(String::from("9"));
-            update_board_state(board, player, &9.to_string());
-            best = best.max(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("9"));
+    let mut best = -100;
+        for i in 0..3 {
+            for j in 0..3 {
+                if board_vec[i][j] == 10 {
+                    let engine_move = find_move(i, j);
+                    println!("{}", engine_move);
+                    println!("{:?}", board_vec);
+                    update_board_state(board, &user_player, &engine_move.to_string());
+                    all_inputs.push(engine_move.to_string());
+                    let best_score = minimax(board, &engine_player, &user_player, all_inputs, false);
+                    reset_board_state(board, &engine_move.to_string());
+                    if best_score > best {
+                        best = best_score;
+                    }
+                }
+            }
         }
-    return best;
-
-} else {
-    let mut best = 1;
-       
-        if board.row1.a == vec![] {
-            all_inputs.push(String::from("1"));
-            update_board_state(board, player, &1.to_string());
-            best = best.min(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("1"));
-        } else if board.row2.a == vec![] {
-            all_inputs.push(String::from("2"));
-            update_board_state(board, player, &2.to_string());
-            best = best.min(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("2"));
-        } else if board.row3.a == vec![] {
-            all_inputs.push(String::from("3"));
-            update_board_state(board, player, &3.to_string());
-            best = best.min(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("3"));
-        } else if board.row1.b == vec![] {
-            all_inputs.push(String::from("4"));
-            update_board_state(board, player, &4.to_string());
-            best = best.min(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("4"));
-        } else if board.row2.b == vec![] {
-            all_inputs.push(String::from("5"));
-            update_board_state(board, player, &5.to_string());
-            best = best.min(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("5"));
-        } else if board.row3.b == vec![] {
-            all_inputs.push(String::from("6"));
-            update_board_state(board, player, &6.to_string());
-            best = best.min(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("6"));
-        } else if board.row1.c == vec![] {
-            all_inputs.push(String::from("7"));
-            update_board_state(board, player, &7.to_string());
-            best = best.min(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("7"));
-        } else if board.row2.c == vec![] {
-            all_inputs.push(String::from("8"));
-            update_board_state(board, player, &8.to_string());
-            best = best.min(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("8"));
-        } else if board.row3.c == vec![] {
-            all_inputs.push(String::from("9"));
-            update_board_state(board, player, &9.to_string());
-            best = best.min(search_move(board, &switch_player_turn(player), &engine_player, &user_player, all_inputs.clone(), false));
-            println!("{}", best);
-            reset_board_state(board, &String::from("9"));
+        return best;
+    } else {
+        let mut best = 100;
+        for i in 0..3 {
+            for j in 0..3 {
+                if board_vec[i][j] == 10 {
+                    let engine_move = find_move(i, j);
+                    println!("{}", engine_move);
+                    println!("{:?}", board_vec);
+                    update_board_state(board, &engine_player, &engine_move.to_string());
+                    all_inputs.push(engine_move.to_string());
+                    let best_score = minimax(board, &engine_player, &user_player, all_inputs, true);
+                    reset_board_state(board, &engine_move.to_string());
+                    if best_score < best {
+                        best = best_score;
+                    }
+                }
+            }
         }
-        
-    return best;
-}
-}
-pub fn best_move(board: &mut Board, player: &Player, engine_player: &Player, user_player: &Player, mut all_inputs: Vec<String>) -> i32 { 
-    let mut best_eval = -100;
-    let moves_left1 = moves_left(&all_inputs);
-    let mut best_move = 0;
-    let mut i = 0;
-    while i < moves_left1.len() {
-        let moves_left_inside = moves_left(&all_inputs);
-        update_board_state(board, player, &moves_left_inside[0].to_string());
-        all_inputs.push(moves_left_inside[0].to_string());
-        let eval_move = search_move(board, player, engine_player, user_player, all_inputs.clone(), is_max(&engine_player));
-        reset_board_state(board, &moves_left_inside[0].to_string());
-        if eval_move > best_eval {
-            best_move = moves_left_inside[0];
-            best_eval = eval_move;
-        }
-        println!("{}", moves_left_inside[0]);
-        i += 1;
+        return best;
     }
-   
-    return best_move;
+    
+}
+pub fn find_move(i: usize, j: usize) -> i32 {
+    if i == 0 {
+        if j == 0 {
+            return 1;
+        } else if j == 1 {
+            return 2;
+        } else {
+            return 3;
+        }
+    } else if i == 1 {
+        if j == 0 {
+            return 4;
+        } else if j == 1 {
+            return 5;
+        } else {
+            return 6;
+        }
+    } else if i == 2 {
+        if j == 0 {
+            return 7;
+        } else if j == 1 {
+            return 8;
+        } else {
+            return 9;
+        }
+    } else {
+        return 0;
+    }
+}
+pub fn best_move(board: &mut Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>) -> i32 {
+    let mut best_eval = -100;
+    let mut best_move = 0;
+    let board_vec = convert_to_vector(board);
+    for i  in 0..3 {
+        for j in 0..3  {
+            if board_vec[i][j] == 10 {
+            let engine_move = find_move(i, j);
+            println!("{}", engine_move);
+            update_board_state(board, engine_player, &engine_move.to_string());
+            all_inputs.push(engine_move.to_string());
+            let eval_move = minimax(board, engine_player, user_player, all_inputs, is_max(&engine_player));
+            reset_board_state(board, &engine_move.to_string());
+            if eval_move > best_eval {
+                best_move = engine_move;
+                best_eval = eval_move;
+            }
+            println!("{}", engine_move);
+            }    
+        }
+    } 
+    return best_move.try_into().unwrap();
 }
 // A function to get a radnom move
 pub fn random_move(board: &mut Board, player: &Player, mut all_inputs: Vec<String>) -> (Board, Vec<String>) {
@@ -252,21 +262,21 @@ pub fn first_move(board: &mut Board) -> bool {
     
 }
 // A function that combines all functions so the engine runs
-pub fn run_engine(board: &mut Board, player: &Player, engine_player: &Player, user_player: &Player, difficulty: &str, mut all_inputs: Vec<String>) -> (Board, Vec<String>)  {
+pub fn run_engine(board: &mut Board, player: &Player, engine_player: &Player, user_player: &Player, difficulty: &str, all_inputs: &mut Vec<String>) -> (Board, Vec<String>)  {
     // Checks for random first because it runs different code than the other difficulties
     if difficulty == "y" {
         // Calls random_move
-        return random_move(board, engine_player, all_inputs);
+        return random_move(board, engine_player, all_inputs.to_vec());
     } else {
         if moves_left(&all_inputs).len() == 8 && first_move(board) == true {
             let first_move = 5;
             update_board_state(board, player, &first_move.to_string());
             all_inputs.push(first_move.to_string());
-            return (board.clone(), all_inputs);
+            return (board.clone(), all_inputs.to_vec());
         }
-       let engine_move = best_move(board, player, engine_player, user_player, all_inputs.clone());
+       let engine_move = best_move(board, engine_player, user_player, all_inputs);
        update_board_state(board, player, &engine_move.to_string());
        all_inputs.push(engine_move.to_string());
-       return (board.clone(), all_inputs);
+       return (board.clone(), all_inputs.to_vec());
     }
 }
