@@ -1,7 +1,7 @@
 use std::{io, mem};
 use rand::seq::SliceRandom;
 use crate::def::{Board, Player};
-use crate::gamestate::{did_win, if_input_exsits, reset_board_state, switch_player_turn, update_board_state};
+use crate::gamestate::{did_win, if_input_exsits, reset_board_state, update_board_state};
 // Function that allows the choice of whether to play the engine or not
 pub fn use_engine() -> bool {
     println!("Do you want to play against an engine. Type Y or N to choose.");
@@ -51,13 +51,16 @@ pub fn moves_left(all_inputs: &Vec<String>) -> Vec<i32> {
     }
     return moves_left;
 }
-pub fn eval(board: &Board, engine_player: &Player) -> i32 {
+pub fn eval(board: &Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>) -> i32 {
     if did_win(board, &engine_player) {
         return 1;
-    } if did_win(board, &switch_player_turn(engine_player)) {
+    } else if did_win(board, &user_player) {
         return -1;
+    } else if moves_left(&all_inputs).len() == 0 {
+        return 0;
+    } else {
+        return 10;
     }
-    return 0;   
 }
 pub fn is_max(player: &Player) -> bool {
     if player == &Player::PlayerOne {
@@ -125,15 +128,17 @@ pub fn convert_to_vector(board: &Board) -> Vec<Vec<i32>> {
     }
     return vector;
 }
-pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>, max: bool) -> i32 {
-    let score = eval(&board, &engine_player);
-    if score == 1 {
-        return score;
+pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>, max: bool, depth: i32) -> i32 {
+    let score = eval(&board, &engine_player, &user_player, all_inputs);
+    if score != 10 {
+        if score == 1 {
+        return 100;
     } else if score == -1 {
-        return score;
-    } else if moves_left(&all_inputs).len() == 0 {
-        return score;
+        return -100;
+    } else if score == 0 {
+        return 0;
     }
+}
     let board_vec = convert_to_vector(board);
     if max {
     let mut best = -100;
@@ -141,11 +146,8 @@ pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, 
             for j in 0..3 {
                 if board_vec[i][j] == 10 {
                     let engine_move = find_move(i, j);
-                    println!("{}", engine_move);
-                    println!("{:?}", board_vec);
                     update_board_state(board, &user_player, &engine_move.to_string());
-                    all_inputs.push(engine_move.to_string());
-                    let best_score = minimax(board, &engine_player, &user_player, all_inputs, false);
+                    let best_score = minimax(board, &engine_player, &user_player, all_inputs, false, depth + 1);
                     reset_board_state(board, &engine_move.to_string());
                     if best_score > best {
                         best = best_score;
@@ -153,18 +155,15 @@ pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, 
                 }
             }
         }
-        return best;
+        return best - depth;
     } else {
         let mut best = 100;
         for i in 0..3 {
             for j in 0..3 {
                 if board_vec[i][j] == 10 {
                     let engine_move = find_move(i, j);
-                    println!("{}", engine_move);
-                    println!("{:?}", board_vec);
                     update_board_state(board, &engine_player, &engine_move.to_string());
-                    all_inputs.push(engine_move.to_string());
-                    let best_score = minimax(board, &engine_player, &user_player, all_inputs, true);
+                    let best_score = minimax(board, &engine_player, &user_player, all_inputs, true, depth + 1);
                     reset_board_state(board, &engine_move.to_string());
                     if best_score < best {
                         best = best_score;
@@ -172,7 +171,7 @@ pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, 
                 }
             }
         }
-        return best;
+        return best - depth;
     }
     
 }
@@ -181,23 +180,23 @@ pub fn find_move(i: usize, j: usize) -> i32 {
         if j == 0 {
             return 1;
         } else if j == 1 {
-            return 2;
+            return 4;
         } else {
-            return 3;
+            return 7;
         }
     } else if i == 1 {
         if j == 0 {
-            return 4;
+            return 2;
         } else if j == 1 {
             return 5;
         } else {
-            return 6;
+            return 8;
         }
     } else if i == 2 {
         if j == 0 {
-            return 7;
+            return 3;
         } else if j == 1 {
-            return 8;
+            return 6;
         } else {
             return 9;
         }
@@ -213,19 +212,18 @@ pub fn best_move(board: &mut Board, engine_player: &Player, user_player: &Player
         for j in 0..3  {
             if board_vec[i][j] == 10 {
             let engine_move = find_move(i, j);
-            println!("{}", engine_move);
             update_board_state(board, engine_player, &engine_move.to_string());
-            all_inputs.push(engine_move.to_string());
-            let eval_move = minimax(board, engine_player, user_player, all_inputs, is_max(&engine_player));
+            let eval_move = minimax(board, engine_player, user_player, all_inputs, false, 1);
             reset_board_state(board, &engine_move.to_string());
-            if eval_move > best_eval {
-                best_move = engine_move;
-                best_eval = eval_move;
+            println!("Eval: {}", eval_move);
+                if eval_move > best_eval {
+                    best_move = engine_move;
+                    best_eval = eval_move;
             }
-            println!("{}", engine_move);
             }    
         }
-    } 
+    }
+    println!("{}", best_move);
     return best_move.try_into().unwrap();
 }
 // A function to get a radnom move
@@ -277,6 +275,7 @@ pub fn run_engine(board: &mut Board, player: &Player, engine_player: &Player, us
        let engine_move = best_move(board, engine_player, user_player, all_inputs);
        update_board_state(board, player, &engine_move.to_string());
        all_inputs.push(engine_move.to_string());
+       println!("{:?}", all_inputs);
        return (board.clone(), all_inputs.to_vec());
     }
 }
