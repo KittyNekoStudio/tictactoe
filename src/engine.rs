@@ -51,24 +51,6 @@ pub fn moves_left(all_inputs: &Vec<String>) -> Vec<i32> {
     }
     return moves_left;
 }
-pub fn eval(board: &Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>) -> i32 {
-    if did_win(board, &engine_player) {
-        return 1;
-    } else if did_win(board, &user_player) {
-        return -1;
-    } else if moves_left(&all_inputs).len() == 0 {
-        return 0;
-    } else {
-        return 10;
-    }
-}
-pub fn is_max(player: &Player) -> bool {
-    if player == &Player::PlayerOne {
-        return true;
-    } else {
-        return false;
-    }
-}
 pub fn convert_to_vector(board: &Board) -> Vec<Vec<i32>> {
     let mut vector = vec![vec![10; 3]; 3];
     let mut _got = 0;
@@ -129,16 +111,13 @@ pub fn convert_to_vector(board: &Board) -> Vec<Vec<i32>> {
     return vector;
 }
 pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>, max: bool, depth: i32) -> i32 {
-    let score = eval(&board, &engine_player, &user_player, all_inputs);
-    if score != 10 {
-        if score == 1 {
+    if did_win(board, &engine_player) {
         return 100;
-    } else if score == -1 {
+    } else if did_win(board, &user_player) {
         return -100;
-    } else if score == 0 {
+    } else if moves_left(&all_inputs).len() == 0 {
         return 0;
     }
-}
     let board_vec = convert_to_vector(board);
     if max {
     let mut best = -100;
@@ -207,6 +186,9 @@ pub fn find_move(i: usize, j: usize) -> i32 {
 pub fn best_move(board: &mut Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>) -> i32 {
     let mut best_eval = -100;
     let mut best_move = 0;
+    if moves_left(&all_inputs).len() == 8 {
+    update_board_state(board, &user_player, &"1".to_string());
+    }
     let board_vec = convert_to_vector(board);
     for i  in 0..3 {
         for j in 0..3  {
@@ -219,11 +201,11 @@ pub fn best_move(board: &mut Board, engine_player: &Player, user_player: &Player
                 if eval_move > best_eval {
                     best_move = engine_move;
                     best_eval = eval_move;
+                    println!("Best Move: {}", best_move);
             }
             }    
         }
     }
-    println!("{}", best_move);
     return best_move.try_into().unwrap();
 }
 // A function to get a radnom move

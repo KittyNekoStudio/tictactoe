@@ -1,5 +1,5 @@
 use crate::def::{Board, Player};
-use crate::engine::{choose_difficulty, random_string_gen, run_engine, use_engine};
+use crate::engine::{choose_difficulty, run_engine, use_engine};
 use std::io;
 // Print the board to the console
 pub fn print_board(board: &Board) {
