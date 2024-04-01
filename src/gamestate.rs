@@ -1,5 +1,5 @@
 use crate::def::{Board, Player};
-use crate::engine::{choose_difficulty, run_engine, use_engine};
+use crate::engine::{if_random, run_engine, use_engine};
 use std::io;
 // Print the board to the console
 pub fn print_board(board: &Board) {
@@ -240,7 +240,7 @@ pub fn play_game() {
 pub fn play_game_with_engine() {
     let mut board = Board::new();
     let mut all_inputs: Vec<String> = Vec::new();
-    let difficulty = choose_difficulty();
+    let difficulty = if_random();
     let user_player = choose_player();
     // Engine is opposite player type of player
     let engine_player = switch_player_turn(&user_player);
