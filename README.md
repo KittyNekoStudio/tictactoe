@@ -1,5 +1,5 @@
 A Command Line program for tic-tac-toe built in rust
 
-It let's you play locally 
+It lets you play locally 
 
-You can also play against a random move generator and a minimax program
+You can also play against a random move generator or a minimax program
