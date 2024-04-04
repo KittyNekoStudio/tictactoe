@@ -2,7 +2,7 @@ use std::{io, mem};
 use rand::seq::SliceRandom;
 use crate::def::{Board, Player};
 use crate::gamestate::{did_win, if_input_exsits, reset_board_state, switch_player_turn, update_board_state};
-// Function that allows the choice of whether to play the engine or not
+/// Function that allows the choice of whether to play the engine or not
 pub fn use_engine() -> bool {
     println!("Do you want to play against an engine. Type Y or N to choose.");
     let mut yes_or_no = String::new().to_lowercase();
@@ -14,7 +14,7 @@ pub fn use_engine() -> bool {
         _ => use_engine()
     }
 }
-// Generates a random number
+/// Generates a random number
 pub fn random_string_gen() -> &'static str {
     let vec = vec!["1", "2", "3", "4", "5", "6", "7", "8", "9"];
     let random_num = vec.choose(&mut rand::thread_rng());
@@ -23,7 +23,7 @@ pub fn random_string_gen() -> &'static str {
     None => random_string_gen()        
     }
 }
-// Generates the first move as all corner moves are the best
+/// Generates the first move as all corner moves are the best
 // If this wasn't here engine would play top right every time
 pub fn random_first_move() -> &'static str {
     let vec = vec!["1", "3", "7", "9"];
@@ -33,7 +33,7 @@ pub fn random_first_move() -> &'static str {
     None => random_string_gen()        
     }
 }
-// A function that asks for the type of engine
+/// A function that asks for the type of engine
 pub fn if_random() -> bool {
     println!("Play against a random engine.");
     println!("Yes(y) or No(n).");
@@ -46,7 +46,7 @@ pub fn if_random() -> bool {
         _ => if_random()
     }
 }
-// Converts board to vector
+/// Converts board to vector
 pub fn convert_to_vector(board: &Board) -> Vec<Vec<i32>> {
     // Creates the vector
     let mut vector = vec![vec![10; 3]; 3];
@@ -112,7 +112,7 @@ pub fn convert_to_vector(board: &Board) -> Vec<Vec<i32>> {
     }
     return vector;
 }
-// A function that returns the winning conditions
+/// A function that returns the winning conditions
 pub fn result(board: &Board, player: &Player) -> String {
     // Returns if either player wins
     if did_win(board, player) {
@@ -140,7 +140,7 @@ pub fn result(board: &Board, player: &Player) -> String {
         return String::from(" ");
     
 }
-// A minimax program that searches for the best move
+/// A minimax program that searches for the best move
 pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>, max: bool, depth: i32) -> i32 {
     // Returns the score depending on the winning condition
     let result = result(board, engine_player);
@@ -204,7 +204,7 @@ pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, 
     }
     
 }
-// A function that takes indexes and converts it into data that can be inputed into the board struct
+/// A function that takes indexes and converts it into data that can be inputed into the board struct
 pub fn find_move(i: usize, j: usize) -> i32 {
     // At index 0 of i
     if i == 0 {
@@ -237,7 +237,7 @@ pub fn find_move(i: usize, j: usize) -> i32 {
         return 0;
     }
 }
-// A function that finds the best move
+/// A function that finds the best move
 pub fn best_move(board: &mut Board, engine_player: &Player, user_player: &Player, all_inputs: &mut Vec<String>) -> i32 {
     // A low score to compare against
     let mut best_eval = -100;
@@ -271,7 +271,7 @@ pub fn best_move(board: &mut Board, engine_player: &Player, user_player: &Player
     // Return the best move
     return best_move.try_into().unwrap();
 }
-// A function to get a random move
+/// A function to get a random move
 pub fn random_move(board: &mut Board, player: &Player, mut all_inputs: Vec<String>) -> (Board, Vec<String>) {
     // Get a random num
         let mut random_num = random_string_gen();
@@ -286,7 +286,7 @@ pub fn random_move(board: &mut Board, player: &Player, mut all_inputs: Vec<Strin
         all_inputs.push(random_num.to_string());
         return (board.clone(), all_inputs);
 }
-// A function that combines all functions so the engine runs
+/// A function that combines all functions so the engine runs
 pub fn run_engine(board: &mut Board, player: &Player, engine_player: &Player, user_player: &Player, difficulty: bool, all_inputs: &mut Vec<String>) -> (Board, Vec<String>)  {
     // Checks for random first because it runs different code than the other difficulties
     if difficulty {

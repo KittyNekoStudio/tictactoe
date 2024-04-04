@@ -1,7 +1,7 @@
 use crate::def::{Board, Player};
 use crate::engine::{if_random, run_engine, use_engine};
 use std::io;
-// Print the board to the console
+/// Print the board to the console
 pub fn print_board(board: &Board) {
     // Makes the empty cells
     let mut cell1 = "|       ";
@@ -59,14 +59,14 @@ pub fn print_board(board: &Board) {
         println!("{}{}{}", cell7, cell8, cell9);
     
 }
-// Swap players
+/// Swap players
 pub fn switch_player_turn(player: &Player) -> Player {
     match player {
         Player::PlayerOne => Player::PlayerTwo,
         Player::PlayerTwo => Player::PlayerOne,
     }
 }
-// Receive player input
+/// Receive player input
 pub fn receive_input() -> String {
     let mut player_input = String::new();
     io::stdin().read_line(&mut player_input).unwrap();
@@ -77,7 +77,7 @@ pub fn receive_input() -> String {
     }
     return player_input_clean;
 }
-// Checks if input has already been received
+/// Checks if input has already been received
 pub fn if_input_exsits(all_inputs: &Vec<String>, new_input: String) -> bool {
     let mut i = 0;
     while i < all_inputs.len() {
@@ -88,22 +88,15 @@ pub fn if_input_exsits(all_inputs: &Vec<String>, new_input: String) -> bool {
     }
     return false;
 }
-// Checks that player input is one of the allowed strings
+/// Checks that player input is one of the allowed strings
 pub fn check_player_input(player_input: &String) -> bool {
-    match player_input.as_str() {
-        "1" => true,
-        "2" => true,
-        "3" => true,
-        "4" => true,
-        "5" => true,
-        "6" => true,
-        "7" => true,
-        "8" => true,
-        "9" => true,
+    match player_input.parse() {
+        Ok(1..=9) => true,
+        Err(_) => false,
         _ => false
     }
 }
-// Pushes 1 or 0 to the cell corresponding to the player type
+/// Pushes 1 or 0 to the cell corresponding to the player type
 pub fn update_board_state(board: &mut Board, player: &Player, player_input: &String) {
     if player == &Player::PlayerOne {
         match player_input.as_str() {
@@ -131,7 +124,9 @@ pub fn update_board_state(board: &mut Board, player: &Player, player_input: &Str
             "9" => board.row3.c.push(0),
             _ => ()
         };
-    }}
+    }
+}
+/// A function that resets the cell to empty
 pub fn reset_board_state(board: &mut Board, player_input: &String) {
         match player_input.as_str() {
                 "1" => board.row1.a = vec![],
@@ -146,7 +141,7 @@ pub fn reset_board_state(board: &mut Board, player_input: &String) {
                 _ => ()
         };
     }
-// User chooses player by typeing either X or O
+/// User chooses player by typeing either X or O
 pub fn choose_player() -> Player {
     println!("To choose player please type X(first player) or O(second player)");
     let mut player_input = String::new().to_lowercase();
@@ -158,7 +153,7 @@ pub fn choose_player() -> Player {
         _ => choose_player()
     }
 }
-// A function that checks if any of the winning positions are reached
+/// A function that checks if any of the winning positions are reached
 pub fn did_win(board: &Board, player: &Player) -> bool {
     let mut num = 0;
     
@@ -187,7 +182,7 @@ pub fn did_win(board: &Board, player: &Player) -> bool {
         return false;
     }
 }
-// Function that combines all functions to make the program run
+/// Function that combines all functions to make the program run
 pub fn play_game() {
     // An if statement that lets user decide to play with the engine or not
     if use_engine() {
@@ -236,7 +231,7 @@ pub fn play_game() {
         println!("Too bad! You drew. Try winning next time.");
     }
     }
-// Function that runs if use decides to play with the engine
+/// Function that runs if use decides to play with the engine
 pub fn play_game_with_engine() {
     let mut board = Board::new();
     let mut all_inputs: Vec<String> = Vec::new();
