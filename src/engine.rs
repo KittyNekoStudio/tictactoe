@@ -49,66 +49,66 @@ pub fn if_random() -> bool {
 /// Converts board to vector
 pub fn convert_to_vector(board: &Board) -> Vec<Vec<i32>> {
     // Creates the vector
-    let mut vector = vec![vec![10; 3]; 3];
+    let mut vector = vec![vec![0; 3]; 3];
     // Variable needed for mem::replace
     let mut _got = 0;
     // If the move was made with X
     // Replace the the index with 1
-    if board.row1.a == vec![1] {
+    if board.row1.a == 1 {
     _got = mem::replace(&mut vector[0][0], 1);
     } 
-    if board.row1.b == vec![1] {
+    if board.row1.b == 1 {
     _got = mem::replace(&mut vector[0][1], 1);
     }
-    if board.row1.c == vec![1] {
+    if board.row1.c == 1 {
     _got = mem::replace(&mut vector[0][2], 1);
     }
-    if board.row2.a == vec![1] {
+    if board.row2.a == 1 {
     _got = mem::replace(&mut vector[1][0], 1);
     }
-    if board.row2.b == vec![1] {
+    if board.row2.b == 1 {
     _got = mem::replace(&mut vector[1][1], 1);
     }
-    if board.row2.c == vec![1] {
+    if board.row2.c == 1 {
     _got = mem::replace(&mut vector[1][2], 1);
     }
-    if board.row3.a == vec![1] {
+    if board.row3.a == 1 {
     _got = mem::replace(&mut vector[2][0], 1);
     }
-    if board.row3.b == vec![1] {
+    if board.row3.b == 1 {
     _got = mem::replace(&mut vector[2][1], 1);        
     }
-    if board.row3.c == vec![1] {
+    if board.row3.c == 1 {
     _got = mem::replace(&mut vector[2][2], 1);
     }
-    if board.row1.a == vec![0] {
-    _got = mem::replace(&mut vector[0][0], 0);    
-    } 
     // If the move was made with O
-    // Replace the index with 0
-    if board.row1.b == vec![0] {
-    _got = mem::replace(&mut vector[0][1], 0);
+    // Replace the index with 2
+    if board.row1.a == 2 {
+    _got = mem::replace(&mut vector[0][0], 2);    
+    } 
+    if board.row1.b == 2 {
+    _got = mem::replace(&mut vector[0][1], 2);
     }
-    if board.row1.c == vec![0] {
-    _got = mem::replace(&mut vector[0][2], 0);
+    if board.row1.c == 2 {
+    _got = mem::replace(&mut vector[0][2], 2);
     }
-    if board.row2.a == vec![0] {
-    _got = mem::replace(&mut vector[1][0], 0);        
+    if board.row2.a == 2 {
+    _got = mem::replace(&mut vector[1][0], 2);        
     }
-    if board.row2.b == vec![0] {
-    _got = mem::replace(&mut vector[1][1], 0);
+    if board.row2.b == 2 {
+    _got = mem::replace(&mut vector[1][1], 2);
     }
-    if board.row2.c == vec![0] {
-    _got = mem::replace(&mut vector[1][2], 0);        
+    if board.row2.c == 2 {
+    _got = mem::replace(&mut vector[1][2], 2);        
     }
-    if board.row3.a == vec![0] {
-    _got = mem::replace(&mut vector[2][0], 0);
+    if board.row3.a == 2 {
+    _got = mem::replace(&mut vector[2][0], 2);
     }
-    if board.row3.b == vec![0] {
-    _got = mem::replace(&mut vector[2][1], 0);        
+    if board.row3.b == 2 {
+    _got = mem::replace(&mut vector[2][1], 2);        
     }
-    if board.row3.c == vec![0] {
-    _got = mem::replace(&mut vector[2][2], 0);        
+    if board.row3.c == 2 {
+    _got = mem::replace(&mut vector[2][2], 2);        
     }
     return vector;
 }
@@ -127,7 +127,7 @@ pub fn result(board: &Board, player: &Player) -> String {
     for i in 0..3 {
         for j in 0..3 {
             // If a move was made
-            if board_vec[i][j] != 10 {
+            if board_vec[i][j] != 0 {
                 counter += 1
             }
         }
@@ -162,7 +162,7 @@ pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, 
         // Iterate over the board
         for i in 0..3 {
             for j in 0..3 {
-                if board_vec[i][j] == 10 {
+                if board_vec[i][j] == 0 {
                     // Calls find_move to find what move it is
                     let engine_move = find_move(i, j);
                     // Update the board
@@ -189,7 +189,7 @@ pub fn minimax(board: &mut Board, engine_player: &Player, user_player: &Player, 
         let mut best = 100;
         for i in 0..3 {
             for j in 0..3 {
-                if board_vec[i][j] == 10 {
+                if board_vec[i][j] == 0 {
                     let engine_move = find_move(i, j);
                     update_board_state(board, &user_player, &engine_move.to_string());
                     let best_score = minimax(board, &engine_player, &user_player, all_inputs, true, depth + 1);
@@ -248,7 +248,7 @@ pub fn best_move(board: &mut Board, engine_player: &Player, user_player: &Player
     for i  in 0..3 {
         for j in 0..3  {
             // If the cell is empty
-            if board_vec[i][j] == 10 {
+            if board_vec[i][j] == 0 {
             // Find the move
             let engine_move = find_move(i, j);
             // Update the board
@@ -257,7 +257,7 @@ pub fn best_move(board: &mut Board, engine_player: &Player, user_player: &Player
             let eval_move = minimax(board, engine_player, user_player, all_inputs, false, 1);
             // Reset the board
             reset_board_state(board, &engine_move.to_string());
-           // println!("Move: {}, Eval: {}", engine_move, eval_move);
+            println!("Move: {}, Eval: {}", engine_move, eval_move);
                 // If the moves has a higher score than the previous move
                 if eval_move > best_eval {
                     // Use the new move

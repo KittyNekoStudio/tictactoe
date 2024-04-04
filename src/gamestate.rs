@@ -16,41 +16,41 @@ pub fn print_board(board: &Board) {
 
     // Goes through every vector to check if player X or O has played there
     // Changes the cell accordingly
-        if board.row1.a == vec![1] {
+        if board.row1.a == 1 {
             cell1 = "|   X   ";
-        } if board.row1.a == vec![0] {
+        } if board.row1.a == 2 {
             cell1 = "|   O   ";
-        } if board.row2.a == vec![1] {
+        } if board.row2.a == 1 {
             cell2 = "|   X   ";
-        } if board.row2.a == vec![0] {
+        } if board.row2.a == 2 {
             cell2 = "|   O   ";
-        } if board.row3.a == vec![1] {
+        } if board.row3.a == 1 {
             cell3 = "|   X   |";
-        } if board.row3.a == vec![0] {
+        } if board.row3.a == 2 {
             cell3 = "|   O   |";
-        } if board.row1.b == vec![1] {
+        } if board.row1.b == 1 {
             cell4 = "|   X   ";
-        } if board.row1.b == vec![0] {
+        } if board.row1.b == 2 {
             cell4 = "|   O   ";
-        } if board.row2.b == vec![1] {
+        } if board.row2.b == 1 {
             cell5 = "|   X   ";
-        } if board.row2.b == vec![0] {
+        } if board.row2.b == 2 {
             cell5 = "|   O   ";
-        } if board.row3.b == vec![1] {
+        } if board.row3.b == 1 {
             cell6 = "|   X   |";
-        } if board.row3.b == vec![0] {
+        } if board.row3.b == 2 {
             cell6 = "|   O   |";
-        } if board.row1.c == vec![1] {
+        } if board.row1.c == 1 {
             cell7 = "|   X   ";
-        } if board.row1.c == vec![0] {
+        } if board.row1.c == 2 {
             cell7 = "|   O   ";
-        } if board.row2.c == vec![1] {
+        } if board.row2.c == 1 {
             cell8 = "|   X   ";
-        } if board.row2.c == vec![0] {
+        } if board.row2.c == 2 {
             cell8 = "|   O   ";
-        } if board.row3.c == vec![1] {
+        } if board.row3.c == 1 {
             cell9 = "|   X   |";
-        } if board.row3.c == vec![0] {
+        } if board.row3.c == 2 {
             cell9 = "|   O   |";
         }
     
@@ -100,28 +100,28 @@ pub fn check_player_input(player_input: &String) -> bool {
 pub fn update_board_state(board: &mut Board, player: &Player, player_input: &String) {
     if player == &Player::PlayerOne {
         match player_input.as_str() {
-            "1" => board.row1.a.push(1),
-            "2" => board.row2.a.push(1),
-            "3" => board.row3.a.push(1),
-            "4" => board.row1.b.push(1),
-            "5" => board.row2.b.push(1),
-            "6" => board.row3.b.push(1),
-            "7" => board.row1.c.push(1),
-            "8" => board.row2.c.push(1),
-            "9" => board.row3.c.push(1),
+            "1" => board.row1.a = 1,
+            "2" => board.row2.a = 1,
+            "3" => board.row3.a = 1,
+            "4" => board.row1.b = 1,
+            "5" => board.row2.b = 1,
+            "6" => board.row3.b = 1,
+            "7" => board.row1.c = 1,
+            "8" => board.row2.c = 1,
+            "9" => board.row3.c = 1,
             _ => ()
         };
     } else {
         match player_input.as_str() {
-            "1" => board.row1.a.push(0),
-            "2" => board.row2.a.push(0),
-            "3" => board.row3.a.push(0),
-            "4" => board.row1.b.push(0),
-            "5" => board.row2.b.push(0),
-            "6" => board.row3.b.push(0),
-            "7" => board.row1.c.push(0),
-            "8" => board.row2.c.push(0),
-            "9" => board.row3.c.push(0),
+            "1" => board.row1.a = 2,
+            "2" => board.row2.a = 2,
+            "3" => board.row3.a = 2,
+            "4" => board.row1.b = 2,
+            "5" => board.row2.b = 2,
+            "6" => board.row3.b = 2,
+            "7" => board.row1.c = 2,
+            "8" => board.row2.c = 2,
+            "9" => board.row3.c = 2,
             _ => ()
         };
     }
@@ -129,15 +129,15 @@ pub fn update_board_state(board: &mut Board, player: &Player, player_input: &Str
 /// A function that resets the cell to empty
 pub fn reset_board_state(board: &mut Board, player_input: &String) {
         match player_input.as_str() {
-                "1" => board.row1.a = vec![],
-                "2" => board.row2.a = vec![],
-                "3" => board.row3.a = vec![],
-                "4" => board.row1.b = vec![],
-                "5" => board.row2.b = vec![],
-                "6" => board.row3.b = vec![],
-                "7" => board.row1.c = vec![],
-                "8" => board.row2.c = vec![],
-                "9" => board.row3.c = vec![],
+                "1" => board.row1.a = 0,
+                "2" => board.row2.a = 0,
+                "3" => board.row3.a = 0,
+                "4" => board.row1.b = 0,
+                "5" => board.row2.b = 0,
+                "6" => board.row3.b = 0,
+                "7" => board.row1.c = 0,
+                "8" => board.row2.c = 0,
+                "9" => board.row3.c = 0,
                 _ => ()
         };
     }
@@ -160,23 +160,23 @@ pub fn did_win(board: &Board, player: &Player) -> bool {
     if player == &Player::PlayerOne {
         num = 1;
     } else {
-        num = 0;
+        num = 2;
     }
-    if board.row1.a == vec![num] && board.row2.a == vec![num] && board.row3.a == vec![num] {
+    if board.row1.a == num && board.row2.a == num && board.row3.a == num {
         return true;
-    } else if board.row1.b == vec![num] && board.row2.b == vec![num] && board.row3.b == vec![num] {
+    } else if board.row1.b == num && board.row2.b == num && board.row3.b == num {
         return true;
-    } else if board.row1.c == vec![num] && board.row2.c == vec![num] && board.row3.c == vec![num] {
+    } else if board.row1.c == num && board.row2.c == num && board.row3.c == num {
         return true;
-    }  else if board.row1.a == vec![num] && board.row1.b == vec![num] && board.row1.c == vec![num] {
+    }  else if board.row1.a == num && board.row1.b == num && board.row1.c == num {
         return true;
-    } else if board.row2.a == vec![num] && board.row2.b == vec![num] && board.row2.c == vec![num] {
+    } else if board.row2.a == num && board.row2.b == num && board.row2.c == num {
         return true;
-    } else if board.row3.a == vec![num] && board.row3.b == vec![num] && board.row3.c == vec![num] {
+    } else if board.row3.a == num && board.row3.b == num && board.row3.c == num {
         return true;
-    } else if board.row1.a == vec![num] && board.row2.b == vec![num] && board.row3.c == vec![num] {
+    } else if board.row1.a == num && board.row2.b == num && board.row3.c == num {
         return true;
-    } else if board.row3.a == vec![num] && board.row2.b == vec![num] && board.row1.c == vec![num] {
+    } else if board.row3.a == num && board.row2.b == num && board.row1.c == num {
         return true;
     } else {
         return false;

@@ -1,9 +1,9 @@
 #[derive(Debug, Clone)]
 // The row for the board
 pub struct Row {
-    pub a: Vec<u32>,
-    pub b: Vec<u32>,
-    pub c: Vec<u32>
+    pub a: u8,
+    pub b: u8,
+    pub c: u8
     
 }
 #[derive(Debug, Clone)]
@@ -18,19 +18,19 @@ impl Board {
     pub fn new() -> Board {
         Board {
             row1: Row {
-                a: vec![],
-                b: vec![],
-                c: vec![],
+                a: 0,
+                b: 0,
+                c: 0,
             },
             row2: Row {
-                a: vec![],
-                b: vec![],
-                c: vec![],
+                a: 0,
+                b: 0,
+                c: 0,
             },
             row3: Row {
-                a: vec![],
-                b: vec![],
-                c: vec![],
+                a: 0,
+                b: 0,
+                c: 0,
             },
         }
     }
