@@ -79,12 +79,10 @@ pub fn receive_input() -> String {
 }
 /// Checks if input has already been received
 pub fn if_input_exsits(all_inputs: &Vec<String>, new_input: String) -> bool {
-    let mut i = 0;
-    while i < all_inputs.len() {
-        if all_inputs[i] == new_input {
+    for i in all_inputs {
+        if i == &new_input {
             return true;
         }
-        i += 1;
     }
     return false;
 }

@@ -257,7 +257,7 @@ pub fn best_move(board: &mut Board, engine_player: &Player, user_player: &Player
             let eval_move = minimax(board, engine_player, user_player, all_inputs, false, 1);
             // Reset the board
             reset_board_state(board, &engine_move.to_string());
-            println!("Move: {}, Eval: {}", engine_move, eval_move);
+            // println!("Move: {}, Eval: {}", engine_move, eval_move);
                 // If the moves has a higher score than the previous move
                 if eval_move > best_eval {
                     // Use the new move
