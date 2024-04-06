@@ -1,8 +1,8 @@
-use crate::def::{Board, Player};
+use crate::def::{board_new, Player};
 use crate::engine::{if_random, run_engine, use_engine};
 use std::io;
 /// Print the board to the console
-pub fn print_board(board: &Board) {
+pub fn print_board(board: &[[u8; 3]; 3]) {
     // Makes the empty cells
     let mut cell1 = "|       ";
     let mut cell2 = "|       ";
@@ -16,44 +16,43 @@ pub fn print_board(board: &Board) {
 
     // Goes through every vector to check if player X or O has played there
     // Changes the cell accordingly
-        if board.row1.a == 1 {
-            cell1 = "|   X   ";
-        } if board.row1.a == 2 {
-            cell1 = "|   O   ";
-        } if board.row2.a == 1 {
-            cell2 = "|   X   ";
-        } if board.row2.a == 2 {
-            cell2 = "|   O   ";
-        } if board.row3.a == 1 {
-            cell3 = "|   X   |";
-        } if board.row3.a == 2 {
-            cell3 = "|   O   |";
-        } if board.row1.b == 1 {
-            cell4 = "|   X   ";
-        } if board.row1.b == 2 {
-            cell4 = "|   O   ";
-        } if board.row2.b == 1 {
-            cell5 = "|   X   ";
-        } if board.row2.b == 2 {
-            cell5 = "|   O   ";
-        } if board.row3.b == 1 {
-            cell6 = "|   X   |";
-        } if board.row3.b == 2 {
-            cell6 = "|   O   |";
-        } if board.row1.c == 1 {
-            cell7 = "|   X   ";
-        } if board.row1.c == 2 {
-            cell7 = "|   O   ";
-        } if board.row2.c == 1 {
-            cell8 = "|   X   ";
-        } if board.row2.c == 2 {
-            cell8 = "|   O   ";
-        } if board.row3.c == 1 {
-            cell9 = "|   X   |";
-        } if board.row3.c == 2 {
-            cell9 = "|   O   |";
-        }
-    
+    if board[0][0] == 1 {
+        cell1 = "|   X   ";
+    } if board[0][0] == 2 {
+        cell1 = "|   O   ";
+    } if board[0][1] == 1 {
+        cell2 = "|   X   ";
+    } if board[0][1] == 2 {
+        cell2 = "|   O   ";
+    } if board[0][2] == 1 {
+        cell3 = "|   X   |";
+    } if board[0][2] == 2 {
+        cell3 = "|   O   |";
+    } if board[1][0] == 1 {
+        cell4 = "|   X   ";
+    } if board[1][0] == 2 {
+        cell4 = "|   O   ";
+    } if board[1][1] == 1 {
+        cell5 = "|   X   ";
+    } if board[1][1] == 2 {
+        cell5 = "|   O   ";
+    } if board[1][2] == 1 {
+        cell6 = "|   X   |";
+    } if board[1][2] == 2 {
+        cell6 = "|   O   |";
+    } if board[2][0] == 1 {
+        cell7 = "|   X   ";
+    } if board[2][0] == 2 {
+        cell7 = "|   O   ";
+    } if board[2][1] == 1 {
+        cell8 = "|   X   ";
+    } if board[2][1] == 2 {
+        cell8 = "|   O   ";
+    } if board[2][2] == 1 {
+        cell9 = "|   X   |";
+    } if board[2][2] == 2 {
+        cell9 = "|   O   |";
+    }
         println!("{}{}{}", cell1, cell2, cell3);
         println!("{}{}{}", cell4, cell5, cell6);
         println!("{}{}{}", cell7, cell8, cell9);
@@ -78,7 +77,7 @@ pub fn receive_input() -> String {
     return player_input_clean;
 }
 /// Checks if input has already been received
-pub fn if_input_exsits(all_inputs: &Vec<String>, new_input: String) -> bool {
+pub fn if_input_exists(all_inputs: &Vec<String>, new_input: String) -> bool {
     for i in all_inputs {
         if i == &new_input {
             return true;
@@ -95,50 +94,35 @@ pub fn check_player_input(player_input: &String) -> bool {
     }
 }
 /// Pushes 1 or 0 to the cell corresponding to the player type
-pub fn update_board_state(board: &mut Board, player: &Player, player_input: &String) {
+pub fn update_board_state(board: &mut [[u8; 3]; 3], player: &Player, player_input: &String) {
     if player == &Player::PlayerOne {
         match player_input.as_str() {
-            "1" => board.row1.a = 1,
-            "2" => board.row2.a = 1,
-            "3" => board.row3.a = 1,
-            "4" => board.row1.b = 1,
-            "5" => board.row2.b = 1,
-            "6" => board.row3.b = 1,
-            "7" => board.row1.c = 1,
-            "8" => board.row2.c = 1,
-            "9" => board.row3.c = 1,
+            "1" => board[0][0] = 1,
+            "2" => board[0][1] = 1,
+            "3" => board[0][2] = 1,
+            "4" => board[1][0] = 1,
+            "5" => board[1][1] = 1,
+            "6" => board[1][2] = 1,
+            "7" => board[2][0] = 1,
+            "8" => board[2][1] = 1,
+            "9" => board[2][2] = 1,
             _ => ()
         };
     } else {
         match player_input.as_str() {
-            "1" => board.row1.a = 2,
-            "2" => board.row2.a = 2,
-            "3" => board.row3.a = 2,
-            "4" => board.row1.b = 2,
-            "5" => board.row2.b = 2,
-            "6" => board.row3.b = 2,
-            "7" => board.row1.c = 2,
-            "8" => board.row2.c = 2,
-            "9" => board.row3.c = 2,
+            "1" => board[0][0] = 2,
+            "2" => board[0][1] = 2,
+            "3" => board[0][2] = 2,
+            "4" => board[1][0] = 2,
+            "5" => board[1][1] = 2,
+            "6" => board[1][2] = 2,
+            "7" => board[2][0] = 2,
+            "8" => board[2][1] = 2,
+            "9" => board[2][2] = 2,
             _ => ()
         };
     }
 }
-/// A function that resets the cell to empty
-pub fn reset_board_state(board: &mut Board, player_input: &String) {
-        match player_input.as_str() {
-                "1" => board.row1.a = 0,
-                "2" => board.row2.a = 0,
-                "3" => board.row3.a = 0,
-                "4" => board.row1.b = 0,
-                "5" => board.row2.b = 0,
-                "6" => board.row3.b = 0,
-                "7" => board.row1.c = 0,
-                "8" => board.row2.c = 0,
-                "9" => board.row3.c = 0,
-                _ => ()
-        };
-    }
 /// User chooses player by typeing either X or O
 pub fn choose_player() -> Player {
     println!("To choose player please type X(first player) or O(second player)");
@@ -152,7 +136,7 @@ pub fn choose_player() -> Player {
     }
 }
 /// A function that checks if any of the winning positions are reached
-pub fn did_win(board: &Board, player: &Player) -> bool {
+pub fn did_win(board: &[[u8; 3]; 3], player: &Player) -> bool {
     let mut num = 0;
     
     if player == &Player::PlayerOne {
@@ -160,21 +144,21 @@ pub fn did_win(board: &Board, player: &Player) -> bool {
     } else {
         num = 2;
     }
-    if board.row1.a == num && board.row2.a == num && board.row3.a == num {
+    if board[0][0] == num && board[0][1] == num && board[0][2] == num {
         return true;
-    } else if board.row1.b == num && board.row2.b == num && board.row3.b == num {
+    } else if board[1][0] == num && board[1][1] == num && board[1][2] == num {
         return true;
-    } else if board.row1.c == num && board.row2.c == num && board.row3.c == num {
+    } else if board[2][0] == num && board[2][1] == num && board[2][2] == num {
         return true;
-    }  else if board.row1.a == num && board.row1.b == num && board.row1.c == num {
+    }  else if board[0][0] == num && board[1][0] == num && board[2][0] == num {
         return true;
-    } else if board.row2.a == num && board.row2.b == num && board.row2.c == num {
+    } else if board[0][1] == num && board[1][1] == num && board[2][1] == num {
         return true;
-    } else if board.row3.a == num && board.row3.b == num && board.row3.c == num {
+    } else if board[0][2] == num && board[1][2] == num && board[2][2] == num {
         return true;
-    } else if board.row1.a == num && board.row2.b == num && board.row3.c == num {
+    } else if board[0][0] == num && board[1][1] == num && board[2][2] == num {
         return true;
-    } else if board.row3.a == num && board.row2.b == num && board.row1.c == num {
+    } else if board[0][2] == num && board[1][1] == num && board[2][0] == num {
         return true;
     } else {
         return false;
@@ -186,7 +170,7 @@ pub fn play_game() {
     if use_engine() {
         play_game_with_engine();
     } else {
-    let mut board = Board::new();
+    let mut board = board_new();
     // Holds all input used to check if already have input and for the main loop condition
     let mut all_inputs: Vec<String> = Vec::new();
     // Player starts as X because X goes first
@@ -202,7 +186,7 @@ pub fn play_game() {
         // Receive user input
         let mut player_input = receive_input();
         // Checks if cell is already filled if it is then call receive_input again
-        while if_input_exsits(&all_inputs, player_input.clone()) {
+        while if_input_exists(&all_inputs, player_input.clone()) {
             player_input = receive_input();
         }
         // Update the board with the input
@@ -228,12 +212,12 @@ pub fn play_game() {
         }
         println!("Too bad! You drew. Try winning next time.");
     }
-    }
+}
 /// Function that runs if use decides to play with the engine
 pub fn play_game_with_engine() {
-    let mut board = Board::new();
+    let mut board = board_new();
     let mut all_inputs: Vec<String> = Vec::new();
-    let difficulty = if_random();
+    let if_random = if_random();
     let user_player = choose_player();
     // Engine is opposite player type of player
     let engine_player = switch_player_turn(&user_player);
@@ -254,8 +238,8 @@ pub fn play_game_with_engine() {
         }
         if &user_player == &Player::PlayerOne {
             let mut player_input = receive_input();
-            // If input exsists call again
-            while if_input_exsits(&all_inputs, player_input.clone()) {
+            // If input exists call again
+            while if_input_exists(&all_inputs, player_input.clone()) {
                 player_input = receive_input();
             }
             // Update the board
@@ -269,7 +253,7 @@ pub fn play_game_with_engine() {
           // Else the engine is X which means it goes first
         } else {
             // Call run_engine
-            let result = run_engine(&mut board, &engine_player, &engine_player, &user_player, difficulty, &mut all_inputs);
+            let result = run_engine(board, &engine_player, &engine_player, &user_player, if_random, &mut all_inputs);
             // Board becomes the output of run_engine
             board = result.0;
             // All_iputs becomes the output of run_engine
@@ -290,7 +274,7 @@ pub fn play_game_with_engine() {
         // The same as for Xs but now for Circles
         if &user_player == &Player::PlayerTwo {
             let mut player_input = receive_input();
-            while if_input_exsits(&all_inputs, player_input.clone()) {
+            while if_input_exists(&all_inputs, player_input.clone()) {
                 player_input = receive_input();
             }
             update_board_state(&mut board, &user_player, &player_input);
@@ -299,7 +283,7 @@ pub fn play_game_with_engine() {
                 break;
             }
         } else {
-            let result = run_engine(&mut board, &engine_player, &engine_player, &user_player, difficulty, &mut all_inputs);
+            let result = run_engine(board, &engine_player, &engine_player, &user_player, if_random, &mut all_inputs);
             board = result.0;
             all_inputs = result.1;
             if did_win(&board, &engine_player) {
@@ -319,7 +303,7 @@ pub fn play_game_with_engine() {
             return println!("You lost to a bot! You suck!");
         }
         let mut player_input = receive_input();
-            while if_input_exsits(&all_inputs, player_input.clone()) {
+            while if_input_exists(&all_inputs, player_input.clone()) {
                 player_input = receive_input();
             }
             update_board_state(&mut board, &user_player, &player_input);
