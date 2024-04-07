@@ -135,6 +135,7 @@ pub fn choose_player() -> Player {
         _ => choose_player()
     }
 }
+#[allow(unused_assignments)]
 /// A function that checks if any of the winning positions are reached
 pub fn did_win(board: &[[u8; 3]; 3], player: &Player) -> bool {
     let mut num = 0;
